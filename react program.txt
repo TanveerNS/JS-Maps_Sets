@@ -1,0 +1,1325 @@
+###		React 
+03-react-basics-working-with-components
+
+_\-	App.js
+import React from 'react';
+import Expenses from './components/Expenses/Expenses';
+const App = () => {
+  const expenses = [
+    {	id: 'e1',	title: 'Toilet Paper',	amount: 94.12,	date: new Date(2020, 7, 14),	},
+    { id: 'e2', title: 'New TV', amount: 799.49, date: new Date(2021, 2, 12) },
+    {	id: 'e3',	title: 'Car Insurance',	amount: 294.67,	date: new Date(2021, 2, 28),	},
+    {	id: 'e4',	title: 'New Desk (Wooden)',	amount: 450,	date: new Date(2021, 5, 12),	},
+  ];
+  // return React.createElement(
+  //   'div',
+  //   {},
+  //   React.createElement('h2', {}, "Let's get started!"),
+  //   React.createElement(Expenses, { items: expenses })
+  // );
+  return (
+    <div>
+      <h2>Let's get started!</h2>
+      <Expenses items={expenses} />
+    </div>
+  );
+}		export default App;
+
+_\-	Expenses.js
+import React from 'react';
+import ExpenseItem from './ExpenseItem';
+import Card from '../UI/Card';
+import './Expenses.css';
+const Expenses = (props) => {
+  return (
+    <Card className="expenses">
+      <ExpenseItem
+        title={props.items[0].title}
+        amount={props.items[0].amount}
+        date={props.items[0].date}
+      />
+      <ExpenseItem
+        title={props.items[1].title}
+        amount={props.items[1].amount}
+        date={props.items[1].date}
+      />
+      <ExpenseItem
+        title={props.items[2].title}
+        amount={props.items[2].amount}
+        date={props.items[2].date}
+      />
+      <ExpenseItem
+        title={props.items[3].title}
+        amount={props.items[3].amount}
+        date={props.items[3].date}
+      />
+    </Card>
+  );
+}	export default Expenses;
+
+_\-	ExpenseDate.js
+import React from 'react';
+import './ExpenseDate.css';
+const ExpenseDate = (props) => {
+  const month = props.date.toLocaleString('en-US', { month: 'long' });
+  const day = props.date.toLocaleString('en-US', { day: '2-digit' });
+  const year = props.date.getFullYear();
+  return (
+    <div className='expense-date'>
+      <div className='expense-date__month'>{month}</div>
+      <div className='expense-date__year'>{year}</div>
+      <div className='expense-date__day'>{day}</div>
+    </div>
+  );
+};	export default ExpenseDate;
+
+_\-	ExpenseItem.js
+import React from 'react';
+import ExpenseDate from './ExpenseDate';
+import Card from '../UI/Card';
+import './ExpenseItem.css';
+const ExpenseItem = (props) => {
+  return (
+    <Card className='expense-item'>
+      <ExpenseDate date={props.date} />
+      <div className='expense-item__description'>
+        <h2>{props.title}</h2>
+        <div className='expense-item__price'>${props.amount}</div>
+      </div>
+    </Card>
+  );
+}	export default ExpenseItem;
+
+_\-	Cards.js
+import React from 'react';
+import './Card.css';
+const Card = (props) => {
+  const classes = 'card ' + props.className;
+  return <div className={classes}>{props.children}</div>;
+};	export default Card;
+
+###		04-react-state-events
+
+_\-	App.js
+import React from 'react';
+import NewExpense from './components/NewExpense/NewExpense';
+import Expenses from './components/Expenses/Expenses';
+const App = () => {
+  const expenses = [
+    {	id: 'e1',	title: 'Toilet Paper',	amount: 94.12,	date: new Date(2020, 7, 14),	},
+    { id: 'e2', title: 'New TV', amount: 799.49, date: new Date(2021, 2, 12) },
+    {id: 'e3',	title: 'Car Insurance',	amount: 294.67,	date: new Date(2021, 2, 28),	},
+    {id: 'e4',	title: 'New Desk (Wooden)',	amount: 450,	date: new Date(2021, 5, 12),	},
+  ];
+  const addExpenseHandler = expense => {
+    console.log('In App.js');
+    console.log(expense);
+  };
+  // return React.createElement(
+  //   'div',
+  //   {},
+  //   React.createElement('h2', {}, "Let's get started!"),
+  //   React.createElement(Expenses, { items: expenses })
+  // );
+  return (
+    <div>
+      <NewExpense onAddExpense={addExpenseHandler} />
+      <Expenses items={expenses} />
+    </div>
+  );
+}	export default App;
+
+_\-	components\Expenses	- ExpenseDate.js
+import React from 'react';
+import './ExpenseDate.css';
+const ExpenseDate = (props) => {
+  const month = props.date.toLocaleString('en-US', { month: 'long' });
+  const day = props.date.toLocaleString('en-US', { day: '2-digit' });
+  const year = props.date.getFullYear();
+  return (
+    <div className='expense-date'>
+      <div className='expense-date__month'>{month}</div>
+      <div className='expense-date__year'>{year}</div>
+      <div className='expense-date__day'>{day}</div>
+    </div>
+  );
+};	export default ExpenseDate;
+
+_\-	components\Expenses	- ExpenseDate.js
+import React from 'react';
+import ExpenseDate from './ExpenseDate';
+import Card from '../UI/Card';
+import './ExpenseItem.css';
+const ExpenseItem = (props) => {
+  return (
+    <Card className='expense-item'>
+      <ExpenseDate date={props.date} />
+      <div className='expense-item__description'>
+        <h2>{props.title}</h2>
+        <div className='expense-item__price'>${props.amount}</div>
+      </div>
+    </Card>
+  );
+}	export default ExpenseItem;
+
+_\-	components\Expenses	- Expenses.js
+import React, { useState } from 'react';
+import ExpenseItem from './ExpenseItem';
+import Card from '../UI/Card';
+import ExpensesFilter from './ExpensesFilter';
+import './Expenses.css';
+const Expenses = (props) => {
+  const [filteredYear, setFilteredYear] = useState('2020');
+  const filterChangeHandler = selectedYear => {
+    setFilteredYear(selectedYear);
+  };
+  return (
+    <div>
+      <Card className='expenses'>
+        <ExpensesFilter selected={filteredYear} onChangeFilter={filterChangeHandler} />
+        <ExpenseItem
+          title={props.items[0].title}
+          amount={props.items[0].amount}
+          date={props.items[0].date}
+        />
+        <ExpenseItem
+          title={props.items[1].title}
+          amount={props.items[1].amount}
+          date={props.items[1].date}
+        />
+        <ExpenseItem
+          title={props.items[2].title}
+          amount={props.items[2].amount}
+          date={props.items[2].date}
+        />
+        <ExpenseItem
+          title={props.items[3].title}
+          amount={props.items[3].amount}
+          date={props.items[3].date}
+        />
+      </Card>
+    </div>
+  );
+}	export default Expenses;
+
+_\-	components\Expenses	- ExpensesFilter
+import React from 'react';
+import './ExpensesFilter.css';
+const ExpensesFilter = (props) => {
+  const dropdownChangeHandler = (event) => {
+    props.onChangeFilter(event.target.value);
+  };
+  return (
+    <div className='expenses-filter'>
+      <div className='expenses-filter__control'>
+        <label>Filter by year</label>
+        <select value={props.selected} onChange={dropdownChangeHandler}>
+          <option value='2022'>2022</option>
+          <option value='2021'>2021</option>
+          <option value='2020'>2020</option>
+          <option value='2019'>2019</option>
+        </select>
+      </div>
+    </div>
+  );
+}	export default ExpensesFilter;
+
+_\-	components\NewExpense	-	ExpenseForm.js
+import React, { useState } from 'react';
+import './ExpenseForm.css';
+const ExpenseForm = (props) => {
+  const [enteredTitle, setEnteredTitle] = useState('');
+  const [enteredAmount, setEnteredAmount] = useState('');
+  const [enteredDate, setEnteredDate] = useState('');
+  // const [userInput, setUserInput] = useState({
+  //   enteredTitle: '',
+  //   enteredAmount: '',
+  //   enteredDate: '',
+  // });
+  const titleChangeHandler = (event) => {
+    setEnteredTitle(event.target.value);
+    // setUserInput({
+    //   ...userInput,
+    //   enteredTitle: event.target.value,
+    // });
+    // setUserInput((prevState) => {
+    //   return { ...prevState, enteredTitle: event.target.value };
+    // });
+  };
+  const amountChangeHandler = (event) => {
+    setEnteredAmount(event.target.value);
+    // setUserInput({
+    //   ...userInput,
+    //   enteredAmount: event.target.value,
+    // });
+  };
+  const dateChangeHandler = (event) => {
+    setEnteredDate(event.target.value);
+    // setUserInput({
+    //   ...userInput,
+    //   enteredDate: event.target.value,
+    // });
+  };
+  const submitHandler = (event) => {
+    event.preventDefault();
+    const expenseData = {
+      title: enteredTitle,
+      amount: enteredAmount,
+      date: new Date(enteredDate),
+    };
+    props.onSaveExpenseData(expenseData);
+    setEnteredTitle('');
+    setEnteredAmount('');
+    setEnteredDate('');
+  };
+  return (
+    <form onSubmit={submitHandler}>
+      <div className='new-expense__controls'>
+        <div className='new-expense__control'>
+          <label>Title</label>
+          <input
+            type='text'
+            value={enteredTitle}
+            onChange={titleChangeHandler}
+          />
+        </div>
+        <div className='new-expense__control'>
+          <label>Amount</label>
+          <input
+            type='number'
+            min='0.01'
+            step='0.01'
+            value={enteredAmount}
+            onChange={amountChangeHandler}
+          />
+        </div>
+        <div className='new-expense__control'>
+          <label>Date</label>
+          <input
+            type='date'
+            min='2019-01-01'
+            max='2022-12-31'
+            value={enteredDate}
+            onChange={dateChangeHandler}
+          />
+        </div>
+      </div>
+      <div className='new-expense__actions'>
+        <button type='submit'>Add Expense</button>
+      </div>
+    </form>
+  );
+}	export default ExpenseForm;
+
+_\-	components\NewExpense	-	NewExpense.js
+import React from 'react';
+import ExpenseForm from './ExpenseForm';
+import './NewExpense.css';
+const NewExpense = (props) => {
+  const saveExpenseDataHandler = (enteredExpenseData) => {
+    const expenseData = {
+      ...enteredExpenseData,
+      id: Math.random().toString()
+    };
+    props.onAddExpense(expenseData);
+  };
+  return (
+    <div className='new-expense'>
+      <ExpenseForm onSaveExpenseData={saveExpenseDataHandler} />
+    </div>
+  );
+}	export default NewExpense;
+
+_\-	components\UI	-	Card.js
+import React from 'react';
+import './Card.css';
+const Card = (props) => {
+  const classes = 'card ' + props.className;
+  return <div className={classes}>{props.children}</div>;
+}	export default Card;
+
+###		05-rendering-lists-conditional-content
+
+_\-	App.js
+import React, { useState } from 'react';
+import NewExpense from './components/NewExpense/NewExpense';
+import Expenses from './components/Expenses/Expenses';
+const DUMMY_EXPENSES = [
+  {	id: 'e1',	title: 'Toilet Paper',	amount: 94.12,	date: new Date(2020, 7, 14),	},
+  { id: 'e2', title: 'New TV', amount: 799.49, date: new Date(2021, 2, 12) },
+  {	id: 'e3',	title: 'Car Insurance',	amount: 294.67,	date: new Date(2021, 2, 28),	},
+  {	id: 'e4',	title: 'New Desk (Wooden)',	amount: 450,	date: new Date(2021, 5, 12),	},
+];
+const App = () => {
+  const [expenses, setExpenses] = useState(DUMMY_EXPENSES);
+  const addExpenseHandler = (expense) => {
+    setExpenses((prevExpenses) => {
+      return [expense, ...prevExpenses];
+    });
+  };
+  // return React.createElement(
+  //   'div',
+  //   {},
+  //   React.createElement('h2', {}, "Let's get started!"),
+  //   React.createElement(Expenses, { items: expenses })
+  // );
+  return (
+    <div>
+      <NewExpense onAddExpense={addExpenseHandler} />
+      <Expenses items={expenses} />
+    </div>
+  );
+}	export default App;
+
+_\-	components\Chart	-	Chart.js
+import React from 'react';
+import ChartBar from './ChartBar';
+import './Chart.css';
+const Chart = (props) => {
+  const dataPointValues = props.dataPoints.map(dataPoint => dataPoint.value);
+  const totalMaximum = Math.max(...dataPointValues);
+  return (
+    <div className='chart'>
+      {props.dataPoints.map((dataPoint) => (
+        <ChartBar
+          key={dataPoint.label}
+          value={dataPoint.value}
+          maxValue={totalMaximum}
+          label={dataPoint.label}
+        />
+      ))}
+    </div>
+  );
+}	export default Chart;
+
+_\-	components\Chart	-	ChartBar.js
+import React from 'react';
+import './ChartBar.css';
+const ChartBar = (props) => {
+  let barFillHeight = '0%';
+  if (props.maxValue > 0) {
+    barFillHeight = Math.round((props.value / props.maxValue) * 100) + '%';
+  }
+  return (
+    <div className='chart-bar'>
+      <div className='chart-bar__inner'>
+        <div
+          className='chart-bar__fill'
+          style={{ height: barFillHeight }}
+        ></div>
+      </div>
+      <div className='chart-bar__label'>{props.label}</div>
+    </div>
+  );
+}	export default ChartBar;
+
+_\-	components\Expenses	-	ExpenseDate.js
+import React from 'react';
+import './ExpenseDate.css';
+const ExpenseDate = (props) => {
+  const month = props.date.toLocaleString('en-US', { month: 'long' });
+  const day = props.date.toLocaleString('en-US', { day: '2-digit' });
+  const year = props.date.getFullYear();
+  return (
+    <div className='expense-date'>
+      <div className='expense-date__month'>{month}</div>
+      <div className='expense-date__year'>{year}</div>
+      <div className='expense-date__day'>{day}</div>
+    </div>
+  );
+}export default ExpenseDate;
+
+_\-	components\Expenses	-	ExpenseDate.js
+import React from 'react';
+import ExpenseDate from './ExpenseDate';
+import Card from '../UI/Card';
+import './ExpenseItem.css';
+const ExpenseItem = (props) => {
+  return (
+    <li>
+      <Card className='expense-item'>
+        <ExpenseDate date={props.date} />
+        <div className='expense-item__description'>
+          <h2>{props.title}</h2>
+          <div className='expense-item__price'>${props.amount}</div>
+        </div>
+      </Card>
+    </li>
+  );
+}	export default ExpenseItem;
+
+_\-	components\Expenses	-	Expenses.js
+import React, { useState } from 'react';
+import Card from '../UI/Card';
+import ExpensesFilter from './ExpensesFilter';
+import ExpensesList from './ExpensesList';
+import ExpensesChart from './ExpensesChart';
+import './Expenses.css';
+const Expenses = (props) => {
+  const [filteredYear, setFilteredYear] = useState('2020');
+  const filterChangeHandler = (selectedYear) => {
+    setFilteredYear(selectedYear);
+  };
+  const filteredExpenses = props.items.filter((expense) => {
+    return expense.date.getFullYear().toString() === filteredYear;
+  });
+  return (
+    <div>
+      <Card className='expenses'>
+        <ExpensesFilter
+          selected={filteredYear}
+          onChangeFilter={filterChangeHandler}
+        />
+        <ExpensesChart expenses={filteredExpenses} />
+        <ExpensesList items={filteredExpenses} />
+      </Card>
+    </div>
+  );
+}	export default Expenses;
+
+_\-	components\Expenses	-	ExpensesChart.js
+import React from 'react';
+import Chart from '../Chart/Chart';
+const ExpensesChart = (props) => {
+  const chartDataPoints = [
+    { label: 'Jan', value: 0 },
+    { label: 'Feb', value: 0 },
+    { label: 'Mar', value: 0 },
+    { label: 'Apr', value: 0 },
+    { label: 'May', value: 0 },
+    { label: 'Jun', value: 0 },
+    { label: 'Jul', value: 0 },
+    { label: 'Aug', value: 0 },
+    { label: 'Sep', value: 0 },
+    { label: 'Oct', value: 0 },
+    { label: 'Nov', value: 0 },
+    { label: 'Dec', value: 0 },
+  ];
+  for (const expense of props.expenses) {
+    const expenseMonth = expense.date.getMonth(); // starting at 0 => January => 0
+    chartDataPoints[expenseMonth].value += expense.amount;
+  }
+  return <Chart dataPoints={chartDataPoints} />;
+}	export default ExpensesChart;
+
+_\-	components\Expenses	-	ExpensesFilter.js
+import React from 'react';
+import './ExpensesFilter.css';
+const ExpensesFilter = (props) => {
+  const dropdownChangeHandler = (event) => {
+    props.onChangeFilter(event.target.value);
+  };
+  return (
+    <div className='expenses-filter'>
+      <div className='expenses-filter__control'>
+        <label>Filter by year</label>
+        <select value={props.selected} onChange={dropdownChangeHandler}>
+          <option value='2022'>2022</option>
+          <option value='2021'>2021</option>
+          <option value='2020'>2020</option>
+          <option value='2019'>2019</option>
+        </select>
+      </div>
+    </div>
+  );
+}	export default ExpensesFilter;
+
+_\-	components\Expenses	-	ExpensesList.js
+import React from 'react';
+import ExpenseItem from './ExpenseItem';
+import './ExpensesList.css';
+const ExpensesList = (props) => {
+  if (props.items.length === 0) {
+    return <h2 className='expenses-list__fallback'>Found no expenses.</h2>;
+  }
+  return (
+    <ul className='expenses-list'>
+      {props.items.map((expense) => (
+        <ExpenseItem
+          key={expense.id}
+          title={expense.title}
+          amount={expense.amount}
+          date={expense.date}
+        />
+      ))}
+    </ul>
+  );
+}	export default ExpensesList;
+
+_\-	components\NewExpense	-	ExpenseForm.js
+import React, { useState } from 'react';
+import './ExpenseForm.css';
+const ExpenseForm = (props) => {
+  const [enteredTitle, setEnteredTitle] = useState('');
+  const [enteredAmount, setEnteredAmount] = useState('');
+  const [enteredDate, setEnteredDate] = useState('');
+  // const [userInput, setUserInput] = useState({
+  //   enteredTitle: '',
+  //   enteredAmount: '',
+  //   enteredDate: '',
+  // });
+  const titleChangeHandler = (event) => {
+    setEnteredTitle(event.target.value);
+    // setUserInput({
+    //   ...userInput,
+    //   enteredTitle: event.target.value,
+    // });
+    // setUserInput((prevState) => {
+    //   return { ...prevState, enteredTitle: event.target.value };
+    // });
+  };
+  const amountChangeHandler = (event) => {
+    setEnteredAmount(event.target.value);
+    // setUserInput({
+    //   ...userInput,
+    //   enteredAmount: event.target.value,
+    // });
+  };
+  const dateChangeHandler = (event) => {
+    setEnteredDate(event.target.value);
+    // setUserInput({
+    //   ...userInput,
+    //   enteredDate: event.target.value,
+    // });
+  };
+  const submitHandler = (event) => {
+    event.preventDefault();
+    const expenseData = {
+      title: enteredTitle,
+      amount: enteredAmount,
+      date: new Date(enteredDate),
+    };
+    props.onSaveExpenseData(expenseData);
+    setEnteredTitle('');
+    setEnteredAmount('');
+    setEnteredDate('');
+  };
+  return (
+    <form onSubmit={submitHandler}>
+      <div className='new-expense__controls'>
+        <div className='new-expense__control'>
+          <label>Title</label>
+          <input
+            type='text'
+            value={enteredTitle}
+            onChange={titleChangeHandler}
+          />
+        </div>
+        <div className='new-expense__control'>
+          <label>Amount</label>
+          <input
+            type='number'
+            min='0.01'
+            step='0.01'
+            value={enteredAmount}
+            onChange={amountChangeHandler}
+          />
+        </div>
+        <div className='new-expense__control'>
+          <label>Date</label>
+          <input
+            type='date'
+            min='2019-01-01'
+            max='2022-12-31'
+            value={enteredDate}
+            onChange={dateChangeHandler}
+          />
+        </div>
+      </div>
+      <div className='new-expense__actions'>
+        <button type="button" onClick={props.onCancel}>Cancel</button>
+        <button type='submit'>Add Expense</button>
+      </div>
+    </form>
+  );
+}	export default ExpenseForm;
+
+_\-	components\NewExpense	-	NewExpense.js
+import React, { useState } from 'react';
+import ExpenseForm from './ExpenseForm';
+import './NewExpense.css';
+const NewExpense = (props) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const saveExpenseDataHandler = (enteredExpenseData) => {
+    const expenseData = {
+      ...enteredExpenseData,
+      id: Math.random().toString(),
+    };
+    props.onAddExpense(expenseData);
+    setIsEditing(false);
+  };
+  const startEditingHandler = () => {
+    setIsEditing(true);
+  };
+  const stopEditingHandler = () => {
+    setIsEditing(false);
+  };
+  return (
+    <div className='new-expense'>
+      {!isEditing && (
+        <button onClick={startEditingHandler}>Add New Expense</button>
+      )}
+      {isEditing && (
+        <ExpenseForm
+          onSaveExpenseData={saveExpenseDataHandler}
+          onCancel={stopEditingHandler}
+        />
+      )}
+    </div>
+  );
+}	export default NewExpense;
+
+_\-	components\UI	-	Card.js
+import React from 'react';
+import './Card.css';
+const Card = (props) => {
+  const classes = 'card ' + props.className;
+  return <div className={classes}>{props.children}</div>;
+}	export default Card;
+
+###		08-practice-project
+_\-	App.js
+import React, { useState } from 'react';
+import AddUser from './components/Users/AddUser';
+import UsersList from './components/Users/UsersList';
+function App() {
+  const [usersList, setUsersList] = useState([]);
+  const addUserHandler = (uName, uAge) => {
+    setUsersList((prevUsersList) => {
+      return [
+        ...prevUsersList,
+        { name: uName, age: uAge, id: Math.random().toString() },
+      ];
+    });
+  };
+  return (
+    <div>
+      <AddUser onAddUser={addUserHandler} />
+      <UsersList users={usersList} />
+    </div>
+  );
+}	export default App;
+
+_\-	components\UI	-	Button.js
+import React from 'react';
+import classes from './Button.module.css';
+const Button = (props) => {
+  return (
+    <button
+      className={classes.button}
+      type={props.type || 'button'}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  );
+}	export default Button;
+
+_\-	components\UI	-	Card.js
+import React from 'react';
+import classes from './Card.module.css';
+const Card = (props) => {
+  return <div className={`${classes.card} ${props.className}`}>{props.children}</div>;
+}	export default Card;
+
+_\-	components\UI	-	ErrorModal.js
+import React from 'react';
+import Card from './Card';
+import Button from './Button';
+import classes from './ErrorModal.module.css';
+const ErrorModal = (props) => {
+  return (
+    <div>
+      <div className={classes.backdrop} onClick={props.onConfirm} />
+      <Card className={classes.modal}>
+        <header className={classes.header}>
+          <h2>{props.title}</h2>
+        </header>
+        <div className={classes.content}>
+          <p>{props.message}</p>
+        </div>
+        <footer className={classes.actions}>
+          <Button onClick={props.onConfirm}>Okay</Button>
+        </footer>
+      </Card>
+    </div>
+  );
+}	export default ErrorModal;
+
+_\-	components\Users	-	AddUser.js
+import React, { useState } from 'react';
+import Card from '../UI/Card';
+import Button from '../UI/Button';
+import ErrorModal from '../UI/ErrorModal';
+import classes from './AddUser.module.css';
+const AddUser = (props) => {
+  const [enteredUsername, setEnteredUsername] = useState('');
+  const [enteredAge, setEnteredAge] = useState('');
+  const [error, setError] = useState();
+  const addUserHandler = (event) => {
+    event.preventDefault();
+    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
+      setError({
+        title: 'Invalid input',
+        message: 'Please enter a valid name and age (non-empty values).',
+      });
+      return;
+    }
+    if (+enteredAge < 1) {
+      setError({
+        title: 'Invalid age',
+        message: 'Please enter a valid age (> 0).',
+      });
+      return;
+    }
+    props.onAddUser(enteredUsername, enteredAge);
+    setEnteredUsername('');
+    setEnteredAge('');
+  };
+  const usernameChangeHandler = (event) => {
+    setEnteredUsername(event.target.value);
+  };
+  const ageChangeHandler = (event) => {
+    setEnteredAge(event.target.value);
+  };
+  const errorHandler = () => {
+    setError(null);
+  };
+  return (
+    <div>
+      {error && (
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onConfirm={errorHandler}
+        />
+      )}
+      <Card className={classes.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input
+            id="username"
+            type="text"
+            value={enteredUsername}
+            onChange={usernameChangeHandler}
+          />
+          <label htmlFor="age">Age (Years)</label>
+          <input
+            id="age"
+            type="number"
+            value={enteredAge}
+            onChange={ageChangeHandler}
+          />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </div>
+  );
+}	export default AddUser;
+
+_\-	components\Users	-	UsersList.js
+import React from 'react';
+import Card from '../UI/Card';
+import classes from './UsersList.module.css';
+const UsersList = (props) => {
+  return (
+    <Card className={classes.users}>
+      <ul>
+        {props.users.map((user) => (
+          <li key={user.id}>
+            {user.name} ({user.age} years old)
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}	export default UsersList;
+
+###	09-fragments-portals-refs
+_\-	App.js
+import React, { useState, Fragment } from 'react';
+import AddUser from './components/Users/AddUser';
+import UsersList from './components/Users/UsersList';
+function App() {
+  const [usersList, setUsersList] = useState([]);
+  const addUserHandler = (uName, uAge) => {
+    setUsersList((prevUsersList) => {
+      return [
+        ...prevUsersList,
+        { name: uName, age: uAge, id: Math.random().toString() },
+      ];
+    });
+  };
+  return (
+    <Fragment>
+      <AddUser onAddUser={addUserHandler} />
+      <UsersList users={usersList} />
+    </Fragment>
+  );
+}	export default App;
+
+_\-	components\Helpers	-	Wrapper.js
+const Wrapper = props => {
+  return props.children;
+}	export default Wrapper;
+
+_\-	components\UI	-	Button.js
+import React from 'react';
+import classes from './Button.module.css';
+const Button = (props) => {
+  return (
+    <button
+      className={classes.button}
+      type={props.type || 'button'}
+      onClick={props.onClick}
+    >
+      {props.children}
+    </button>
+  );
+}	export default Button;
+
+_\-	components\Helpers	-	Card.js
+import React from 'react';
+import classes from './Card.module.css';
+const Card = (props) => {
+  return <div className={`${classes.card} ${props.className}`}>{props.children}</div>;
+}	export default Card;
+
+_\-	components\Helpers	-	ErrorModal.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Card from './Card';
+import Button from './Button';
+import classes from './ErrorModal.module.css';
+const Backdrop = (props) => {
+  return <div className={classes.backdrop} onClick={props.onConfirm} />;
+};
+const ModalOverlay = (props) => {
+  return (
+    <Card className={classes.modal}>
+      <header className={classes.header}>
+        <h2>{props.title}</h2>
+      </header>
+      <div className={classes.content}>
+        <p>{props.message}</p>
+      </div>
+      <footer className={classes.actions}>
+        <Button onClick={props.onConfirm}>Okay</Button>
+      </footer>
+    </Card>
+  );
+};
+const ErrorModal = (props) => {
+  return (
+    <React.Fragment>
+      {ReactDOM.createPortal(
+        <Backdrop onConfirm={props.onConfirm} />,
+        document.getElementById('backdrop-root')
+      )}
+      {ReactDOM.createPortal(
+        <ModalOverlay
+          title={props.title}
+          message={props.message}
+          onConfirm={props.onConfirm}
+        />,
+        document.getElementById('overlay-root')
+      )}
+    </React.Fragment>
+  );
+}	export default ErrorModal;
+
+_\-	components\Users	-	AddUser.js
+import React, { useState, useRef } from 'react';
+import Card from '../UI/Card';
+import Button from '../UI/Button';
+import ErrorModal from '../UI/ErrorModal';
+import Wrapper from '../Helpers/Wrapper';
+import classes from './AddUser.module.css';
+const AddUser = (props) => {
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
+  const [error, setError] = useState();
+  const addUserHandler = (event) => {
+    event.preventDefault();
+    const enteredName = nameInputRef.current.value;
+    const enteredUserAge = ageInputRef.current.value;
+    if (enteredName.trim().length === 0 || enteredUserAge.trim().length === 0) {
+      setError({
+        title: 'Invalid input',
+        message: 'Please enter a valid name and age (non-empty values).',
+      });
+      return;
+    }
+    if (+enteredUserAge < 1) {
+      setError({
+        title: 'Invalid age',
+        message: 'Please enter a valid age (> 0).',
+      });
+      return;
+    }
+    props.onAddUser(enteredName, enteredUserAge);
+    nameInputRef.current.value = '';
+    ageInputRef.current.value = '';
+  };
+  const errorHandler = () => {
+    setError(null);
+  };
+  return (
+    <Wrapper>
+      {error && (
+        <ErrorModal
+          title={error.title}
+          message={error.message}
+          onConfirm={errorHandler}
+        />
+      )}
+      <Card className={classes.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input id="username" type="text" ref={nameInputRef} />
+          <label htmlFor="age">Age (Years)</label>
+          <input id="age" type="number" ref={ageInputRef} />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </Wrapper>
+  );
+}	export default AddUser;
+
+_\-	components\Users	-	UserList.js
+import React from 'react';
+import Card from '../UI/Card';
+import classes from './UsersList.module.css';
+const UsersList = (props) => {
+  return (
+    <Card className={classes.users}>
+      <ul>
+        {props.users.map((user) => (
+          <li key={user.id}>
+            {user.name} ({user.age} years old)
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}	export default UsersList;
+
+###		10-side-effects-reducers-context-api
+_\-	App.js
+import React, { useContext } from 'react';
+import Login from './components/Login/Login';
+import Home from './components/Home/Home';
+import MainHeader from './components/MainHeader/MainHeader';
+import AuthContext from './store/auth-context';
+function App() {
+  const ctx = useContext(AuthContext);
+  return (
+    <React.Fragment>
+      <MainHeader />
+      <main>
+        {!ctx.isLoggedIn && <Login />}
+        {ctx.isLoggedIn && <Home />}
+      </main>
+    </React.Fragment>
+  );
+}	export default App;
+
+_\-	components\Home	-	Home.js
+import React, { useContext } from 'react';
+import Card from '../UI/Card/Card';
+import Button from '../UI/Button/Button';
+import classes from './Home.module.css';
+import AuthContext from '../../store/auth-context';
+const Home = (props) => {
+  const authCtx = useContext(AuthContext);
+  return (
+    <Card className={classes.home}>
+      <h1>Welcome back!</h1>
+      <Button onClick={authCtx.onLogout}>Logout</Button>
+    </Card>
+  );
+}	export default Home;
+
+_\-	components\Login	-	Login.js
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useContext,
+  useRef,
+} from 'react';
+import Card from '../UI/Card/Card';
+import Button from '../UI/Button/Button';
+import AuthContext from '../../store/auth-context';
+import Input from '../UI/Input/Input';
+import classes from './Login.module.css';
+const emailReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.includes('@') };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.includes('@') };
+  }
+  return { value: '', isValid: false };
+};
+const passwordReducer = (state, action) => {
+  if (action.type === 'USER_INPUT') {
+    return { value: action.val, isValid: action.val.trim().length > 6 };
+  }
+  if (action.type === 'INPUT_BLUR') {
+    return { value: state.value, isValid: state.value.trim().length > 6 };
+  }
+  return { value: '', isValid: false };
+};
+const Login = (props) => {
+  // const [enteredEmail, setEnteredEmail] = useState('');
+  // const [emailIsValid, setEmailIsValid] = useState();
+  // const [enteredPassword, setEnteredPassword] = useState('');
+  // const [passwordIsValid, setPasswordIsValid] = useState();
+  const [formIsValid, setFormIsValid] = useState(false);
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: '',
+    isValid: null,
+  });
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+    value: '',
+    isValid: null,
+  });
+  const authCtx = useContext(AuthContext);
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+  useEffect(() => {
+    console.log('EFFECT RUNNING');
+    return () => {
+      console.log('EFFECT CLEANUP');
+    };
+  }, []);
+  const { isValid: emailIsValid } = emailState;
+  const { isValid: passwordIsValid } = passwordState;
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log('Checking form validity!');
+      setFormIsValid(emailIsValid && passwordIsValid);
+    }, 500);
+    return () => {
+      console.log('CLEANUP');
+      clearTimeout(identifier);
+    };
+  }, [emailIsValid, passwordIsValid]);
+  const emailChangeHandler = (event) => {
+    dispatchEmail({ type: 'USER_INPUT', val: event.target.value });
+
+    // setFormIsValid(
+    //   event.target.value.includes('@') && passwordState.isValid
+    // );
+  };
+  const passwordChangeHandler = (event) => {
+    dispatchPassword({ type: 'USER_INPUT', val: event.target.value });
+
+    // setFormIsValid(emailState.isValid && event.target.value.trim().length > 6);
+  };
+  const validateEmailHandler = () => {
+    dispatchEmail({ type: 'INPUT_BLUR' });
+  };
+  const validatePasswordHandler = () => {
+    dispatchPassword({ type: 'INPUT_BLUR' });
+  };
+  const submitHandler = (event) => {
+    event.preventDefault();
+    if (formIsValid) {
+      authCtx.onLogin(emailState.value, passwordState.value);
+    } else if (!emailIsValid) {
+      emailInputRef.current.focus();
+    } else {
+      passwordInputRef.current.focus();
+    }
+  };
+  return (
+    <Card className={classes.login}>
+      <form onSubmit={submitHandler}>
+        <Input
+          ref={emailInputRef}
+          id="email"
+          label="E-Mail"
+          type="email"
+          isValid={emailIsValid}
+          value={emailState.value}
+          onChange={emailChangeHandler}
+          onBlur={validateEmailHandler}
+        />
+        <Input
+          ref={passwordInputRef}
+          id="password"
+          label="Password"
+          type="password"
+          isValid={passwordIsValid}
+          value={passwordState.value}
+          onChange={passwordChangeHandler}
+          onBlur={validatePasswordHandler}
+        />
+        <div className={classes.actions}>
+          <Button type="submit" className={classes.btn}>
+            Login
+          </Button>
+        </div>
+      </form>
+    </Card>
+  );
+}	export default Login;
+
+_\-	components\MainHeader	-	MainHeader.js
+import React from 'react';
+import Navigation from './Navigation';
+import classes from './MainHeader.module.css';
+const MainHeader = (props) => {
+  return (
+    <header className={classes['main-header']}>
+      <h1>A Typical Page</h1>
+      <Navigation />
+    </header>
+  );
+}	export default MainHeader;
+
+_\-	components\MainHeader	-	Navigation.js
+import React, { useContext } from 'react';
+import AuthContext from '../../store/auth-context';
+import classes from './Navigation.module.css';
+const Navigation = () => {
+  const ctx = useContext(AuthContext);
+  return (
+    <nav className={classes.nav}>
+      <ul>
+        {ctx.isLoggedIn && (
+          <li>
+            <a href="/">Users</a>
+          </li>
+        )}
+        {ctx.isLoggedIn && (
+          <li>
+            <a href="/">Admin</a>
+          </li>
+        )}
+        {ctx.isLoggedIn && (
+          <li>
+            <button onClick={ctx.onLogout}>Logout</button>
+          </li>
+        )}
+      </ul>
+    </nav>
+  );
+}	export default Navigation;
+
+_\-	components\UI\Button	-	Button.js
+import React from 'react';
+import classes from './Button.module.css';
+const Button = (props) => {
+  return (
+    <button
+      type={props.type || 'button'}
+      className={`${classes.button} ${props.className}`}
+      onClick={props.onClick}
+      disabled={props.disabled}
+    >
+      {props.children}
+    </button>
+  );
+}	export default Button;
+
+_\-	components\UI\Card	-	Card.js
+import React from 'react';
+import classes from './Card.module.css';
+const Card = (props) => {
+  return (
+    <div className={`${classes.card} ${props.className}`}>{props.children}</div>
+  );
+}	export default Card;
+
+_\-	components\UI\Input	-	Input.js
+import React, { useRef, useImperativeHandle } from 'react';
+import classes from './Input.module.css';
+const Input = React.forwardRef((props, ref) => {
+  const inputRef = useRef();
+  const activate = () => {
+    inputRef.current.focus();
+  };
+  useImperativeHandle(ref, () => {
+    return {
+      focus: activate,
+    };
+  });
+  return (
+    <div
+      className={`${classes.control} ${
+        props.isValid === false ? classes.invalid : ''
+      }`}
+    >
+      <label htmlFor={props.id}>{props.label}</label>
+      <input
+        ref={inputRef}
+        type={props.type}
+        id={props.id}
+        value={props.value}
+        onChange={props.onChange}
+        onBlur={props.onBlur}
+      />
+    </div>
+  );
+})	export default Input;
+
+_\-	store	-	auth-context.js
+import React, { useState, useEffect } from 'react';
+const AuthContext = React.createContext({
+  isLoggedIn: false,
+  onLogout: () => {},
+  onLogin: (email, password) => {}
+});
+export const AuthContextProvider = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    const storedUserLoggedInInformation = localStorage.getItem('isLoggedIn');
+    if (storedUserLoggedInInformation === '1') {
+      setIsLoggedIn(true);
+    }
+  }, []);
+  const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+  };
+  const loginHandler = () => {
+    localStorage.setItem('isLoggedIn', '1');
+    setIsLoggedIn(true);
+  };
+  return (
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: isLoggedIn,
+        onLogout: logoutHandler,
+        onLogin: loginHandler,
+      }}
+    >
+      {props.children}
+    </AuthContext.Provider>
+  );
+}	export default AuthContext;
+
+###		11-practice-food-order-app
+
+_\-	
+
+_\-	
+
+_\-	
+
+_\-	
+
+_\-	
+
+_\-	
+
+_\-	
+
+_\-	
+
+_\-	
+
+_\-	
