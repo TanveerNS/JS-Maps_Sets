@@ -1,0 +1,65 @@
+ACID Transactions
+Atomicity
+A transaction has to be "all or nothing"
+Consistency
+A transaction has to transform the data from one valid state to another
+Isolation
+Concurrent transactions leave the data in a state as if they were executed in sequence
+Durability
+Once a transaction has been committed it shall be persistently stored
+
+Document Databases
+MongoDB
+Redis
+Couchbase
+CouchDB
+DynamoDB
+Cassandra
+AWS
+
+Relational Databases
+Oracle
+IBM Db2
+Microsoft SQL Server
+MySQL
+SQLite
+PostgreSQL
+
+NoSQL Databases
+Have existed since the 1960s but got popular with Web 2.0
+No integrity through relations
+Not by definition ACID compliant
+Often a synonum for document databases, but there are others, like graph databases
+
+Schema-Less Databases
+No defined data structure 
+Can store arbitary data
+Schema management moves into the application
+
+Graph databases, big data, analytics, and artificial intelligence
+
+When Not to use Document Databases
+Highly structured data-think to a tax system
+Data integrity is key and has to be enforced at any given time
+Many different applications manipulate the data, and here again consistency has to be enforced on a database level
+
+When to use Document Databases
+Data is unstructured or semistructured-think about items in a shop
+High write performance (possibly sacrificing consistency)
+Scaling out to cluster-like systems
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
