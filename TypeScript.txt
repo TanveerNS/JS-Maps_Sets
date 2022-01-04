@@ -1,0 +1,56 @@
+#	TypeScript
+TypeScript is an open-source, object-oriented programing language, which is developed and maintained by Microsoft under the Apache 2 license. It was introduced by Anders Hejlsberg, a core member of the development team of C# language. TypeScript is a strongly typed superset of JavaScript which compiles to plain JavaScript. It is a language for application-scale JavaScript development, which can be executed on any browser, any Host, and any Operating System. TypeScript is not directly run on the browser. It needs a compiler to compile and generate in JavaScript file. TypeScript is the ES6 version of JavaScript with some additional features.
+TypeScript is an open-source pure object-oriented programing language. It is a strongly typed superset of JavaScript which compiles to plain JavaScript. It contains all elements of the JavaScript. It is a language designed for large-scale JavaScript application development, which can be executed on any browser, any Host, and any Operating System. The TypeScript is a language as well as a set of tools. TypeScript is the ES6 version of JavaScript with some additional features.
+In 2010, Anders Hejlsberg, a core member of the development team of C# language, started working on TypeScript at Microsoft. The first version of TypeScript was released to the public in the month of 1st October 2012 and was labeled as version 0.8. Now, it is maintained by Microsoft under the Apache 2 license. The latest version of Typescript is TypeScript 3.5, which was released to the public on May 2019.
+
+#	Why use TypeScript?
+TypeScript supports Static typing, Strongly type, Modules, Optional Parameters, etc.
+TypeScript supports object-oriented programming features such as classes, interfaces, inheritance, generics, etc.
+TypeScript is fast, simple, and most importantly, easy to learn.
+TypeScript provides the error-checking feature at compilation time. It will compile the code, and if any error found, then it highlighted the mistakes before the script is run.
+TypeScript supports all JavaScript libraries because it is the superset of JavaScript.
+TypeScript support reusability because of the inheritance.
+TypeScript make app development quick and easy as possible, and the tooling support of TypeScript gives us autocompletion, type checking, and source documentation.
+TypeScript has a definition file with .d.ts extension to provide a definition for external JavaScript libraries.
+TypeScript supports the latest JavaScript features, including ECMAScript 2015.
+TypeScript gives all the benefits of ES6 plus more productivity.
+Developers can save a lot of time with TypeScript.
+
+SN	JavaScript	TypeScript
+1.	It doesn't support strongly typed or static typing.	It supports strongly typed or static typing feature.
+2.	Netscape developed it in 1995.	Anders Hejlsberg developed it in 2012.
+3.	JavaScript source file is in ".js" extension.	TypeScript source file is in ".ts" extension.
+4.	It is directly run on the browser.	It is not directly run on the browser.
+5.	It is just a scripting language.	It supports object-oriented programming concept like classes, interfaces, inheritance, generics, etc.
+6.	It doesn't support optional parameters.	It supports optional parameters.
+7.	It is interpreted language that's why it highlighted the errors at runtime.	It compiles the code and highlighted errors during the development time.
+
+TS Version
+1.	0.8	01-10-2012	
+2.	0.9	18-06-2013	
+3.	1.1	06-10-2014	Performance Improvements
+4.	1.3	12-11-2014	Protected modifier, tuple types
+5.	1.4	20-01-2015	union types, let and const declarations, type guards, type aliases, template strings
+6.	1.5	20-07-2015	ES6 modules, decorators, for..of support, namespace keyword
+7.	1.6	16-09-2015	JSX support, abstract classes and methods, local type declarations, intersection types, user-defined type guard functions
+8.	1.7	30-11-2015	async and await support
+9.	1.8	22-02-2016	constraints generic, control flow analysis errors, string literal types, allowJs
+10.	2.0	22-09-2016	control flow based type analysis, null-and undefined-aware types, never type, discriminated union types, readonly keyword, type of this for functions
+11.	2.1	08-11-2016	mapped types, keyof and lookup types, object spread and rest
+12.	2.2	22-02-2017	object type, mix-in classes
+13.	2.3	27-04-2017	async iteration, strict option, generic parameter defaults
+14.	2.4	27-06-2017	dynamic import expressions, improved inference for generics, string enums, strict contravariance, for callback parameters
+15.	2.5	31-08-2017	optional catch clause variables
+16.	2.6	31-10-2017	strict function types
+17.	2.7	31-01-2018	fixed length tuples, constant-named properties
+18.	2.8	27-03-2108	improved keyof with intersection types, conditional types
+19.	2.9	14-05-2018	support for symbols and numeric literals in keyof and mapped object types
+20.	3.0	30-07-2018	project references, extracting and spreading parameter lists with tuples
+21.	3.1	27-09-2018	mappable tuple and array types
+22.	3.2	30-09-2018	stricter checking for bind, call, apply
+23.	3.3	31-01-2019	Improved behavior on methods of union types, incremental builds for composite projects.
+24.	3.4	29-03-2019	Faster incremental builds with the --incremental flag, type inference from generic functions, readonly modifier for arrays and tuples, const assertions, type-checking for globalThis.
+25.	3.5	29-05-2019	Speed improvements, Improved excess property checks in union types, faster incremental builds, Omit helper type, smarter union type checking
+
+
+
